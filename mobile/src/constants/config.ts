@@ -6,10 +6,15 @@
 export const DEV_MODE = __DEV__ || process.env.EXPO_PUBLIC_DEV_MODE === 'true';
 
 // API Configuration
-// Use your computer's local IP for real device testing
-// Find your IP with: ipconfig getifaddr en0
+// Production server
+const PROD_API = 'http://139.196.192.211:8000';
+// Local development (use your computer's IP for real device testing)
 const LOCAL_IP = '192.168.18.234';
-export const API_URL = process.env.EXPO_PUBLIC_API_URL || `http://${LOCAL_IP}:8000`;
+const LOCAL_API = `http://${LOCAL_IP}:8000`;
+
+// Switch between local and production
+const USE_PROD = true; // 改为 false 使用本地服务器
+export const API_URL = process.env.EXPO_PUBLIC_API_URL || (USE_PROD ? PROD_API : LOCAL_API);
 
 // IAP Product IDs
 export const IAP_PRODUCTS = {
