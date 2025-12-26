@@ -68,3 +68,4 @@ export async function setComplianceAccepted(): Promise<void> {
   await AsyncStorage.setItem(COMPLIANCE_ACCEPTED_KEY, 'true');
 }
 
+

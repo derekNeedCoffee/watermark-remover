@@ -25,3 +25,4 @@ export function clearCurrentImage() {
   currentImage = null;
 }
 
+
