@@ -6,7 +6,7 @@
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "dark",
-    "newArchEnabled": true,
+    "newArchEnabled": false,
     "scheme": "watermark-remover",
     "splash": {
       "image": "./assets/splash-icon.png",
@@ -15,7 +15,8 @@
     },
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.yourcompany.watermarkremover",
+      "bundleIdentifier": "com.linzaixinhua.watermarkremove",
+      "appleTeamId": "EP73U6E2WX",
       "infoPlist": {
         "NSPhotoLibraryUsageDescription": "We need access to your photos to select images for watermark removal.",
         "NSPhotoLibraryAddUsageDescription": "We need permission to save edited images to your photo library."
