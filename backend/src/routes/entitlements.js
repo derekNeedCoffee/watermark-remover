@@ -25,14 +25,19 @@ router.get('/entitlements', (req, res) => {
     const entitlement = getOrCreateEntitlement(installId);
     
     const isPro = !!entitlement.is_pro;
-    const freeRemaining = isPro 
-      ? 999 
-      : Math.max(0, config.app.freeUsageLimit - entitlement.free_used_count);
+    const credits = entitlement.credits || 0;
+    const freeRemaining = Math.max(0, config.app.freeUsageLimit - entitlement.free_used_count);
+    
+    // Total available uses = credits + free remaining (if not pro)
+    const totalRemaining = isPro ? 999999 : credits + freeRemaining;
     
     res.json({
       installId: entitlement.install_id,
       isPro,
+      credits,
       freeRemaining,
+      totalRemaining,
+      freeLimit: config.app.freeUsageLimit,
     });
   } catch (error) {
     console.error('Error getting entitlements:', error);

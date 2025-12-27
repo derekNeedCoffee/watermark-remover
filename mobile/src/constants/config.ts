@@ -3,7 +3,8 @@
  */
 
 // Development mode - set to true to bypass paywall
-export const DEV_MODE = __DEV__ || process.env.EXPO_PUBLIC_DEV_MODE === 'true';
+// Set to false to show paywall for screenshots/testing
+export const DEV_MODE = false;
 
 // API Configuration
 // Production server
@@ -18,7 +19,16 @@ export const API_URL = process.env.EXPO_PUBLIC_API_URL || (USE_PROD ? PROD_API :
 
 // IAP Product IDs
 export const IAP_PRODUCTS = {
-  PRO_UNLOCK: 'pro_unlock',
+  CREDITS_10: 'credits_10',
+  CREDITS_50: 'credits_50',
+  CREDITS_100: 'credits_100',
+} as const;
+
+// Credits per purchase
+export const CREDITS_AMOUNT = {
+  credits_10: 10,
+  credits_50: 50,
+  credits_100: 100,
 } as const;
 
 // Image constraints

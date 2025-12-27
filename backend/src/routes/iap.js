@@ -2,7 +2,15 @@
  * IAP Verification API Routes
  */
 const express = require('express');
-const { getOrCreateEntitlement, updateEntitlement, transactionExists, saveTransaction } = require('../db');
+const { getOrCreateEntitlement, updateEntitlement, addCredits, transactionExists, saveTransaction } = require('../db');
+const config = require('../config');
+
+// Credits amount per product
+const CREDITS_PER_PRODUCT = {
+  'credits_10': 10,
+  'credits_50': 50,
+  'credits_100': 100,
+};
 const { verifyAppleReceipt } = require('../services/iapVerify');
 
 const router = express.Router();
@@ -29,10 +37,12 @@ router.post('/iap/verify', async (req, res) => {
     });
   }
   
-  if (productId !== 'pro_unlock') {
+  // Validate product ID
+  const validProducts = Object.keys(CREDITS_PER_PRODUCT);
+  if (!validProducts.includes(productId)) {
     return res.status(400).json({
       code: 'INVALID_PRODUCT',
-      message: 'Invalid product ID',
+      message: `Invalid product ID. Valid products: ${validProducts.join(', ')}`,
     });
   }
   
@@ -60,13 +70,19 @@ router.post('/iap/verify', async (req, res) => {
       });
     }
     
-    // Update entitlement to Pro
+    // Add credits to user
     getOrCreateEntitlement(installId);
-    updateEntitlement(installId, { is_pro: true });
+    const creditsToAdd = CREDITS_PER_PRODUCT[productId] || 0;
+    addCredits(installId, creditsToAdd);
+    
+    // Get updated entitlement
+    const entitlement = getOrCreateEntitlement(installId);
     
     res.json({
-      isPro: true,
-      freeRemaining: 0,
+      success: true,
+      creditsAdded: creditsToAdd,
+      credits: entitlement.credits,
+      freeRemaining: Math.max(0, config.app.freeUsageLimit - entitlement.free_used_count),
     });
   } catch (error) {
     console.error('IAP verification error:', error);

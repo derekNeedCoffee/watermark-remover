@@ -1,5 +1,5 @@
 /**
- * Paywall Modal Component
+ * Paywall Modal Component - Credits System
  */
 import React, { useState, useEffect } from 'react';
 import {
@@ -12,7 +12,8 @@ import {
 } from 'react-native';
 import { colors, spacing, borderRadius, typography, shadows } from '../constants/theme';
 import { Button } from './Button';
-import { getProducts, purchaseProUnlock, restorePurchases } from '../services/iap';
+import { getProducts, purchaseCredits, restorePurchases } from '../services/iap';
+import { IAP_PRODUCTS, CREDITS_AMOUNT } from '../constants/config';
 
 interface PaywallModalProps {
   visible: boolean;
@@ -20,6 +21,19 @@ interface PaywallModalProps {
   onPurchaseSuccess: () => void;
   installId: string;
 }
+
+interface CreditPackage {
+  productId: string;
+  credits: number;
+  price: string;
+  popular?: boolean;
+}
+
+const CREDIT_PACKAGES: CreditPackage[] = [
+  { productId: IAP_PRODUCTS.CREDITS_10, credits: 10, price: '$0.99' },
+  { productId: IAP_PRODUCTS.CREDITS_50, credits: 50, price: '$2.99', popular: true },
+  { productId: IAP_PRODUCTS.CREDITS_100, credits: 100, price: '$4.99' },
+];
 
 export function PaywallModal({
   visible,
@@ -29,32 +43,15 @@ export function PaywallModal({
 }: PaywallModalProps) {
   const [loading, setLoading] = useState(false);
   const [restoring, setRestoring] = useState(false);
-  const [price, setPrice] = useState('$4.99');
+  const [selectedPackage, setSelectedPackage] = useState<CreditPackage>(CREDIT_PACKAGES[1]);
   const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    if (visible) {
-      loadProducts();
-    }
-  }, [visible]);
-
-  const loadProducts = async () => {
-    try {
-      const products = await getProducts();
-      if (products.length > 0) {
-        setPrice(products[0].price);
-      }
-    } catch (err) {
-      console.error('Failed to load products:', err);
-    }
-  };
 
   const handlePurchase = async () => {
     setLoading(true);
     setError(null);
 
     try {
-      const result = await purchaseProUnlock(installId);
+      const result = await purchaseCredits(installId, selectedPackage.productId);
       if (result.success) {
         onPurchaseSuccess();
       } else {
@@ -96,24 +93,49 @@ export function PaywallModal({
         <View style={styles.container}>
           {/* Header */}
           <View style={styles.header}>
-            <Text style={styles.title}>Unlock Pro</Text>
+            <Text style={styles.title}>Get Credits</Text>
             <TouchableOpacity onPress={onClose} style={styles.closeButton}>
               <Text style={styles.closeText}>✕</Text>
             </TouchableOpacity>
           </View>
 
-          {/* Features */}
-          <View style={styles.features}>
-            <FeatureItem emoji="✨" text="Unlimited watermark removal" />
-            <FeatureItem emoji="🎯" text="High-quality results" />
-            <FeatureItem emoji="⚡" text="Fast processing" />
-            <FeatureItem emoji="💎" text="One-time purchase, forever yours" />
+          {/* Subtitle */}
+          <Text style={styles.subtitle}>
+            Each credit = 1 watermark removal
+          </Text>
+
+          {/* Credit Packages */}
+          <View style={styles.packages}>
+            {CREDIT_PACKAGES.map((pkg) => (
+              <TouchableOpacity
+                key={pkg.productId}
+                style={[
+                  styles.packageCard,
+                  selectedPackage.productId === pkg.productId && styles.packageCardSelected,
+                ]}
+                onPress={() => setSelectedPackage(pkg)}
+              >
+                {pkg.popular && (
+                  <View style={styles.popularBadge}>
+                    <Text style={styles.popularText}>BEST VALUE</Text>
+                  </View>
+                )}
+                <Text style={styles.packageCredits}>{pkg.credits}</Text>
+                <Text style={styles.packageLabel}>Credits</Text>
+                <Text style={styles.packagePrice}>{pkg.price}</Text>
+                <Text style={styles.packagePerCredit}>
+                  ${(parseFloat(pkg.price.replace('$', '')) / pkg.credits).toFixed(2)}/each
+                </Text>
+              </TouchableOpacity>
+            ))}
           </View>
 
-          {/* Price */}
-          <View style={styles.priceContainer}>
-            <Text style={styles.price}>{price}</Text>
-            <Text style={styles.priceSubtext}>One-time purchase</Text>
+          {/* Features */}
+          <View style={styles.features}>
+            <FeatureItem emoji="✨" text="AI-powered watermark removal" />
+            <FeatureItem emoji="⚡" text="Fast processing in seconds" />
+            <FeatureItem emoji="🔒" text="Your photos stay private" />
+            <FeatureItem emoji="♾️" text="Credits never expire" />
           </View>
 
           {/* Error */}
@@ -126,7 +148,7 @@ export function PaywallModal({
           {/* Actions */}
           <View style={styles.actions}>
             <Button
-              title="Unlock Now"
+              title={`Buy ${selectedPackage.credits} Credits - ${selectedPackage.price}`}
               onPress={handlePurchase}
               loading={loading}
               disabled={loading || restoring}
@@ -180,7 +202,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: spacing.xl,
+    marginBottom: spacing.sm,
   },
   title: {
     fontSize: typography.fontSize.xxl,
@@ -194,39 +216,83 @@ const styles = StyleSheet.create({
     fontSize: typography.fontSize.xl,
     color: colors.textMuted,
   },
+  subtitle: {
+    fontSize: typography.fontSize.md,
+    color: colors.textSecondary,
+    marginBottom: spacing.lg,
+  },
+  packages: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: spacing.lg,
+    gap: spacing.xs,
+  },
+  packageCard: {
+    flex: 1,
+    backgroundColor: colors.background,
+    borderRadius: borderRadius.lg,
+    padding: spacing.sm,
+    paddingVertical: spacing.md,
+    alignItems: 'center',
+    borderWidth: 2,
+    borderColor: 'transparent',
+    position: 'relative',
+    minWidth: 90,
+  },
+  packageCardSelected: {
+    borderColor: colors.primary,
+    backgroundColor: 'rgba(139, 92, 246, 0.1)',
+  },
+  popularBadge: {
+    position: 'absolute',
+    top: -10,
+    backgroundColor: colors.primary,
+    paddingHorizontal: spacing.sm,
+    paddingVertical: 2,
+    borderRadius: borderRadius.sm,
+  },
+  popularText: {
+    fontSize: 9,
+    fontWeight: '700',
+    color: '#fff',
+  },
+  packageCredits: {
+    fontSize: 28,
+    fontWeight: '700',
+    color: colors.text,
+    marginTop: spacing.sm,
+  },
+  packageLabel: {
+    fontSize: typography.fontSize.xs,
+    color: colors.textSecondary,
+    marginBottom: spacing.xs,
+  },
+  packagePrice: {
+    fontSize: typography.fontSize.lg,
+    fontWeight: '600',
+    color: colors.primary,
+  },
+  packagePerCredit: {
+    fontSize: typography.fontSize.xs,
+    color: colors.textMuted,
+    marginTop: 2,
+  },
   features: {
-    marginBottom: spacing.xl,
+    marginBottom: spacing.lg,
   },
   featureItem: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: spacing.md,
+    marginBottom: spacing.sm,
   },
   featureEmoji: {
-    fontSize: 24,
-    marginRight: spacing.md,
+    fontSize: 18,
+    marginRight: spacing.sm,
+    width: 24,
   },
   featureText: {
-    fontSize: typography.fontSize.md,
-    color: colors.text,
-  },
-  priceContainer: {
-    alignItems: 'center',
-    marginBottom: spacing.lg,
-    paddingVertical: spacing.lg,
-    borderTopWidth: 1,
-    borderBottomWidth: 1,
-    borderColor: colors.border,
-  },
-  price: {
-    fontSize: typography.fontSize.xxxl,
-    fontWeight: '700',
-    color: colors.primary,
-  },
-  priceSubtext: {
     fontSize: typography.fontSize.sm,
     color: colors.textSecondary,
-    marginTop: spacing.xs,
   },
   errorContainer: {
     backgroundColor: 'rgba(239, 68, 68, 0.1)',
@@ -249,4 +315,3 @@ const styles = StyleSheet.create({
     marginTop: spacing.lg,
   },
 });
-

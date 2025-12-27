@@ -3,7 +3,7 @@
  */
 const express = require('express');
 const sharp = require('sharp');
-const { getOrCreateEntitlement, incrementFreeUsedCount } = require('../db');
+const { getOrCreateEntitlement, incrementFreeUsedCount, useCredit } = require('../db');
 const { editImageWithDoubao } = require('../services/doubao');
 const config = require('../config');
 
@@ -41,14 +41,19 @@ router.post('/edit', async (req, res) => {
     // Check entitlement
     const entitlement = getOrCreateEntitlement(installId);
     const isPro = !!entitlement.is_pro;
+    const hasCredits = entitlement.credits > 0;
+    const hasFreeUsage = entitlement.free_used_count < config.app.freeUsageLimit;
     
     // In dev mode, bypass paywall
     if (config.app.devMode) {
       console.log('🔧 DEV MODE: Bypassing paywall check');
-    } else if (!isPro && entitlement.free_used_count >= config.app.freeUsageLimit) {
+    } else if (!isPro && !hasCredits && !hasFreeUsage) {
       return res.status(402).json({
         code: 'PAYWALL',
-        message: 'Free quota used. Please purchase Pro.',
+        message: 'No credits remaining. Please purchase more credits.',
+        credits: entitlement.credits,
+        freeUsed: entitlement.free_used_count,
+        freeLimit: config.app.freeUsageLimit,
       });
     }
     
@@ -65,14 +70,27 @@ router.post('/edit', async (req, res) => {
       });
     }
     
-    // Success - increment free used count if not pro (skip in dev mode)
-    if (!isPro && !config.app.devMode) {
-      incrementFreeUsedCount(installId);
+    // Success - deduct usage (skip in dev mode)
+    if (!config.app.devMode && !isPro) {
+      if (hasCredits) {
+        // Use purchased credits first
+        useCredit(installId);
+      } else {
+        // Use free quota
+        incrementFreeUsedCount(installId);
+      }
     }
+    
+    // Get updated entitlement
+    const updatedEntitlement = getOrCreateEntitlement(installId);
     
     res.json({
       resultBase64,
-      meta: { retryLevel },
+      meta: { 
+        retryLevel,
+        credits: updatedEntitlement.credits,
+        freeRemaining: Math.max(0, config.app.freeUsageLimit - updatedEntitlement.free_used_count),
+      },
     });
   } catch (error) {
     console.error('Edit error:', error);

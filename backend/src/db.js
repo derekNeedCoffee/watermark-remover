@@ -14,16 +14,26 @@ db.pragma('journal_mode = WAL');
  * Initialize database tables
  */
 function initDatabase() {
-  // Entitlements table
+  // Entitlements table (credits system)
   db.exec(`
     CREATE TABLE IF NOT EXISTS entitlements (
       install_id TEXT PRIMARY KEY,
       is_pro INTEGER DEFAULT 0,
+      credits INTEGER DEFAULT 0,
       free_used_count INTEGER DEFAULT 0,
+      total_purchased_credits INTEGER DEFAULT 0,
       created_at TEXT DEFAULT CURRENT_TIMESTAMP,
       updated_at TEXT DEFAULT CURRENT_TIMESTAMP
     )
   `);
+  
+  // Add credits column if not exists (for existing databases)
+  try {
+    db.exec(`ALTER TABLE entitlements ADD COLUMN credits INTEGER DEFAULT 0`);
+  } catch (e) { /* column already exists */ }
+  try {
+    db.exec(`ALTER TABLE entitlements ADD COLUMN total_purchased_credits INTEGER DEFAULT 0`);
+  } catch (e) { /* column already exists */ }
 
   // IAP transactions table
   db.exec(`
@@ -103,6 +113,30 @@ function incrementFreeUsedCount(installId) {
 }
 
 /**
+ * Add credits to user
+ */
+function addCredits(installId, amount) {
+  db.prepare(`
+    UPDATE entitlements 
+    SET credits = credits + ?, 
+        total_purchased_credits = total_purchased_credits + ?,
+        updated_at = CURRENT_TIMESTAMP 
+    WHERE install_id = ?
+  `).run(amount, amount, installId);
+}
+
+/**
+ * Use one credit
+ */
+function useCredit(installId) {
+  db.prepare(`
+    UPDATE entitlements 
+    SET credits = credits - 1, updated_at = CURRENT_TIMESTAMP 
+    WHERE install_id = ? AND credits > 0
+  `).run(installId);
+}
+
+/**
  * Check if transaction exists
  */
 function transactionExists(transactionId) {
@@ -133,6 +167,8 @@ module.exports = {
   getOrCreateEntitlement,
   updateEntitlement,
   incrementFreeUsedCount,
+  addCredits,
+  useCredit,
   transactionExists,
   saveTransaction,
 };
