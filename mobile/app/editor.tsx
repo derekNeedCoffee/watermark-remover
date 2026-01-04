@@ -229,11 +229,11 @@ export default function EditorScreen() {
         />
 
         {/* Entitlement Info */}
-        {entitlement && !entitlement.isPro && (
+        {entitlement && (
           <Text style={styles.entitlementInfo}>
-            {entitlement.freeRemaining > 0
-              ? `${entitlement.freeRemaining} free use remaining`
-              : 'Free trial used • Unlock Pro for unlimited use'}
+            {(entitlement.credits ?? 0) + (entitlement.freeRemaining ?? 0) > 0
+              ? `${(entitlement.credits ?? 0) + (entitlement.freeRemaining ?? 0)} uses remaining`
+              : 'No credits • Buy more to continue'}
           </Text>
         )}
       </View>

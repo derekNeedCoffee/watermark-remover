@@ -31,8 +31,9 @@ interface CreditPackage {
 
 const CREDIT_PACKAGES: CreditPackage[] = [
   { productId: IAP_PRODUCTS.CREDITS_10, credits: 10, price: '$0.99' },
-  { productId: IAP_PRODUCTS.CREDITS_50, credits: 50, price: '$2.99', popular: true },
-  { productId: IAP_PRODUCTS.CREDITS_100, credits: 100, price: '$4.99' },
+  // 审核通过后取消注释添加更多套餐
+  // { productId: IAP_PRODUCTS.CREDITS_50, credits: 50, price: '$2.99', popular: true },
+  // { productId: IAP_PRODUCTS.CREDITS_100, credits: 100, price: '$4.99' },
 ];
 
 export function PaywallModal({
@@ -43,7 +44,7 @@ export function PaywallModal({
 }: PaywallModalProps) {
   const [loading, setLoading] = useState(false);
   const [restoring, setRestoring] = useState(false);
-  const [selectedPackage, setSelectedPackage] = useState<CreditPackage>(CREDIT_PACKAGES[1]);
+  const [selectedPackage, setSelectedPackage] = useState<CreditPackage>(CREDIT_PACKAGES[0]);
   const [error, setError] = useState<string | null>(null);
 
   const handlePurchase = async () => {

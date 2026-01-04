@@ -82,17 +82,17 @@ export default function HomeScreen() {
   const getStatusText = () => {
     if (loading) return 'Loading...';
     if (!entitlement) return '';
-    if (entitlement.isPro) return '✨ Pro Unlocked';
-    if (entitlement.freeRemaining > 0) {
-      return `${entitlement.freeRemaining} free use${entitlement.freeRemaining > 1 ? 's' : ''} remaining`;
+    const totalRemaining = (entitlement.credits ?? 0) + (entitlement.freeRemaining ?? 0);
+    if (totalRemaining > 0) {
+      return `${totalRemaining} use${totalRemaining > 1 ? 's' : ''} remaining`;
     }
-    return 'Free trial used';
+    return 'No credits remaining';
   };
 
   const getStatusStyle = () => {
     if (!entitlement) return styles.statusNeutral;
-    if (entitlement.isPro) return styles.statusPro;
-    if (entitlement.freeRemaining > 0) return styles.statusFree;
+    const totalRemaining = (entitlement.credits ?? 0) + (entitlement.freeRemaining ?? 0);
+    if (totalRemaining > 0) return styles.statusFree;
     return styles.statusExpired;
   };
 

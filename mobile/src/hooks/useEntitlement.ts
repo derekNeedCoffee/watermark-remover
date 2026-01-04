@@ -18,7 +18,8 @@ interface UseEntitlementResult {
 // Dev mode entitlement - unlimited access
 const DEV_ENTITLEMENT: Entitlement = {
   installId: 'dev-mode',
-  isPro: true,
+  isPro: false,
+  credits: 999,
   freeRemaining: 999,
 };
 
@@ -66,10 +67,10 @@ export function useEntitlement(): UseEntitlementResult {
     fetchEntitlement();
   }, [fetchEntitlement]);
 
-  // In dev mode, always allow service usage
+  // Check if user can use service (has credits or free uses remaining)
   const canUseService = DEV_MODE 
     ? true 
-    : (entitlement ? entitlement.isPro || entitlement.freeRemaining > 0 : false);
+    : (entitlement ? (entitlement.credits ?? 0) + (entitlement.freeRemaining ?? 0) > 0 : false);
 
   return {
     entitlement,

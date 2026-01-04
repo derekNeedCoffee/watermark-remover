@@ -11,7 +11,9 @@ if (DEV_MODE) {
 export interface Entitlement {
   installId: string;
   isPro: boolean;
+  credits?: number;
   freeRemaining: number;
+  totalRemaining?: number;
 }
 
 export interface BBox {
@@ -50,6 +52,8 @@ export interface IAPVerifyRequest {
 export interface IAPVerifyResponse {
   isPro: boolean;
   freeRemaining: number;
+  creditsAdded?: number;
+  credits?: number;
 }
 
 class ApiError extends Error {
@@ -118,9 +122,9 @@ export async function getEntitlements(installId: string): Promise<Entitlement> {
 export async function editImage(request: EditRequest): Promise<EditResponse> {
   console.log('📤 Sending edit request to:', `${API_URL}/v1/edit`);
   console.log('📤 Image size:', Math.round(request.imageBase64.length / 1024), 'KB');
-  
+
   const startTime = Date.now();
-  
+
   const response = await fetchWithTimeout(
     `${API_URL}/v1/edit`,
     {
@@ -137,7 +141,7 @@ export async function editImage(request: EditRequest): Promise<EditResponse> {
     },
     TIMEOUTS.API_REQUEST,
   );
-  
+
   console.log('📥 Response received in', Date.now() - startTime, 'ms, status:', response.status);
 
   if (response.status === 402) {
@@ -187,6 +191,8 @@ export async function verifyIAP(request: IAPVerifyRequest): Promise<IAPVerifyRes
   return {
     isPro: data.is_pro || data.isPro,
     freeRemaining: data.free_remaining ?? data.freeRemaining ?? 0,
+    creditsAdded: data.creditsAdded,
+    credits: data.credits,
   };
 }
 

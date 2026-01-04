@@ -8,7 +8,7 @@ export const DEV_MODE = false;
 
 // API Configuration
 // Production server
-const PROD_API = 'http://139.196.192.211:8000';
+const PROD_API = 'https://www.derektaotang.com';
 // Local development (use your computer's IP for real device testing)
 const LOCAL_IP = '192.168.18.234';
 const LOCAL_API = `http://${LOCAL_IP}:8000`;

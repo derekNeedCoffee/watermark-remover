@@ -1,13 +1,9 @@
 /**
- * In-App Purchase service
- * 
- * Note: This is a placeholder implementation.
- * For production, you need to:
- * 1. Run `npx expo install expo-in-app-purchases` (requires dev client)
- * 2. Configure App Store Connect with credit products
- * 3. Implement actual purchase flow
+ * In-App Purchase service using react-native-iap
  */
-import { IAP_PRODUCTS, CREDITS_AMOUNT } from '../constants/config';
+import * as IAP from 'react-native-iap';
+import { Platform } from 'react-native';
+import { IAP_PRODUCTS } from '../constants/config';
 import { verifyIAP } from './api';
 
 export interface PurchaseResult {
@@ -16,95 +12,91 @@ export interface PurchaseResult {
   credits?: number;
 }
 
-// Placeholder for IAP state
 let isInitialized = false;
 
 /**
  * Initialize IAP connection
  */
 export async function initializeIAP(): Promise<void> {
-  // In production, initialize expo-in-app-purchases here
-  // await InAppPurchases.connectAsync();
-  isInitialized = true;
-  console.log('IAP initialized (placeholder)');
+  if (isInitialized) return;
+
+  try {
+    await IAP.initConnection();
+    if (Platform.OS === 'ios') {
+      await IAP.clearTransactionIOS();
+    }
+    isInitialized = true;
+    console.log('✅ IAP initialized successfully');
+  } catch (err) {
+    console.error('❌ Failed to initialize IAP:', err);
+    throw err;
+  }
 }
 
 /**
  * Get available products
  */
-export async function getProducts(): Promise<any[]> {
-  if (!isInitialized) {
+export async function getProducts(): Promise<IAP.Product[]> {
+  try {
     await initializeIAP();
+    const skus = Object.values(IAP_PRODUCTS);
+    const products = await IAP.getProducts({ skus: skus });
+    console.log(`📦 Fetched ${products.length} products`);
+    return products;
+  } catch (err) {
+    console.error('❌ Failed to fetch products:', err);
+    return [];
   }
-  
-  // In production:
-  // const productIds = Object.values(IAP_PRODUCTS);
-  // const { results } = await InAppPurchases.getProductsAsync(productIds);
-  // return results;
-  
-  // Placeholder
-  return [
-    {
-      productId: IAP_PRODUCTS.CREDITS_10,
-      title: '10 Credits',
-      description: '10 watermark removal credits',
-      price: '$0.99',
-    },
-    {
-      productId: IAP_PRODUCTS.CREDITS_50,
-      title: '50 Credits',
-      description: '50 watermark removal credits',
-      price: '$2.99',
-    },
-    {
-      productId: IAP_PRODUCTS.CREDITS_100,
-      title: '100 Credits',
-      description: '100 watermark removal credits',
-      price: '$4.99',
-    },
-  ];
 }
 
 /**
  * Purchase credits
  */
 export async function purchaseCredits(installId: string, productId: string): Promise<PurchaseResult> {
-  if (!isInitialized) {
-    await initializeIAP();
-  }
-  
   try {
-    // In production:
-    // await InAppPurchases.purchaseItemAsync(productId);
-    // 
-    // Then listen for purchase updates:
-    // InAppPurchases.setPurchaseListener(({ responseCode, results }) => {
-    //   if (responseCode === InAppPurchases.IAPResponseCode.OK) {
-    //     for (const purchase of results) {
-    //       // Verify with backend
-    //       const result = await verifyIAP({
-    //         installId,
-    //         platform: 'ios',
-    //         productId: purchase.productId,
-    //         receipt: purchase.transactionReceipt,
-    //       });
-    //       // Acknowledge purchase (consumable)
-    //       await InAppPurchases.finishTransactionAsync(purchase, true);
-    //     }
-    //   }
-    // });
-    
-    // Placeholder - simulate purchase flow
-    console.log(`Purchase flow started for ${productId} (placeholder)`);
-    
+    await initializeIAP();
+
+    console.log(`🛒 Requesting purchase for ${productId}...`);
+    const purchaseResult = await IAP.requestPurchase({ sku: productId });
+
+    // Handle both single object and array return types
+    const purchase = Array.isArray(purchaseResult) ? purchaseResult[0] : purchaseResult;
+
+    if (purchase) {
+      const receipt = purchase.transactionReceipt;
+
+      console.log('🔗 Verifying purchase with backend...');
+      const result = await verifyIAP({
+        installId,
+        platform: 'ios',
+        productId: purchase.productId,
+        receipt: receipt,
+      });
+
+      // Finish transaction (cross-platform method in v12)
+      await IAP.finishTransaction({ purchase: purchase, isConsumable: true });
+
+      return {
+        success: true,
+        credits: result.creditsAdded
+      };
+    }
+
+    return { success: false, error: 'Purchase failed or cancelled' };
+  } catch (err) {
+    console.error('❌ Purchase error:', err);
+    let errorMessage = 'Purchase failed';
+
+    if (err instanceof Error) {
+      if ((err as any).code === 'E_USER_CANCELLED') {
+        return { success: false, error: 'User cancelled' };
+      }
+      errorMessage = err.message;
+    }
+
     return {
       success: false,
-      error: 'IAP not configured. Please set up expo-in-app-purchases for production.',
-    };
-  } catch (error) {
-    return {
-      success: false,
-      error: error instanceof Error ? error.message : 'Purchase failed',
+      error: errorMessage
     };
   }
 }
@@ -120,38 +112,31 @@ export async function purchaseProUnlock(installId: string): Promise<PurchaseResu
  * Restore previous purchases
  */
 export async function restorePurchases(installId: string): Promise<PurchaseResult> {
-  if (!isInitialized) {
-    await initializeIAP();
-  }
-  
   try {
-    // In production:
-    // const { results } = await InAppPurchases.getPurchaseHistoryAsync();
-    // 
-    // for (const purchase of results) {
-    //   if (purchase.productId === IAP_PRODUCTS.PRO_UNLOCK) {
-    //     await verifyIAP({
-    //       installId,
-    //       platform: 'ios',
-    //       productId: purchase.productId,
-    //       receipt: purchase.transactionReceipt,
-    //     });
-    //     return { success: true };
-    //   }
-    // }
-    
-    // Placeholder
-    console.log('Restore purchases (placeholder)');
-    
-    return {
-      success: false,
-      error: 'No previous purchases found',
-    };
-  } catch (error) {
-    return {
-      success: false,
-      error: error instanceof Error ? error.message : 'Restore failed',
-    };
+    await initializeIAP();
+    const purchases = await IAP.getAvailablePurchases();
+
+    if (purchases && purchases.length > 0) {
+      console.log(`🔄 Found ${purchases.length} previous purchases`);
+      // For watermark remover, these are consumables, so they've likely been used.
+      // But we can check for non-consumable 'pro_unlock' if it existed.
+      for (const purchase of purchases) {
+        if (purchase.productId === 'pro_unlock') {
+          await verifyIAP({
+            installId,
+            platform: 'ios',
+            productId: purchase.productId,
+            receipt: purchase.transactionReceipt,
+          });
+          return { success: true };
+        }
+      }
+    }
+
+    return { success: false, error: 'No restorable purchases found' };
+  } catch (err) {
+    console.error('❌ Restore error:', err);
+    return { success: false, error: 'Restore failed' };
   }
 }
 
@@ -160,8 +145,7 @@ export async function restorePurchases(installId: string): Promise<PurchaseResul
  */
 export async function disconnectIAP(): Promise<void> {
   if (isInitialized) {
-    // In production:
-    // await InAppPurchases.disconnectAsync();
+    await IAP.endConnection();
     isInitialized = false;
   }
 }

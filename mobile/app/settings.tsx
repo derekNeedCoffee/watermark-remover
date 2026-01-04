@@ -63,36 +63,24 @@ export default function SettingsScreen() {
         
         <View style={styles.card}>
           <View style={styles.statusRow}>
-            <Text style={styles.label}>Status</Text>
-            <View style={[
-              styles.statusBadge,
-              entitlement?.isPro ? styles.statusPro : styles.statusFree
-            ]}>
-              <Text style={styles.statusText}>
-                {entitlement?.isPro ? 'Pro' : 'Free'}
-              </Text>
-            </View>
+            <Text style={styles.label}>Credits</Text>
+            <Text style={styles.creditsValue}>{entitlement?.credits ?? 0}</Text>
           </View>
 
-          {!entitlement?.isPro && (
-            <>
-              <View style={styles.divider} />
-              <View style={styles.statusRow}>
-                <Text style={styles.label}>Free Uses Remaining</Text>
-                <Text style={styles.value}>{entitlement?.freeRemaining ?? 0}</Text>
-              </View>
-            </>
-          )}
+          <View style={styles.divider} />
+          
+          <View style={styles.statusRow}>
+            <Text style={styles.label}>Free Uses Remaining</Text>
+            <Text style={styles.value}>{entitlement?.freeRemaining ?? 0}</Text>
+          </View>
         </View>
 
-        {!entitlement?.isPro && (
-          <Button
-            title="Upgrade to Pro"
-            onPress={() => setShowPaywall(true)}
-            size="large"
-            style={styles.upgradeButton}
-          />
-        )}
+        <Button
+          title="Buy More Credits"
+          onPress={() => setShowPaywall(true)}
+          size="large"
+          style={styles.upgradeButton}
+        />
 
         <Button
           title="Restore Purchases"
@@ -127,7 +115,7 @@ export default function SettingsScreen() {
         <View style={styles.card}>
           <SettingsLink
             title="Send Feedback"
-            onPress={() => Linking.openURL('mailto:support@example.com?subject=Watermark Remover Feedback')}
+            onPress={() => Linking.openURL('mailto:support@watermark-remover.app?subject=Watermark Remover Feedback')}
           />
         </View>
       </View>
@@ -202,21 +190,10 @@ const styles = StyleSheet.create({
     color: colors.textSecondary,
     fontWeight: '500',
   },
-  statusBadge: {
-    paddingHorizontal: spacing.md,
-    paddingVertical: spacing.xs,
-    borderRadius: borderRadius.full,
-  },
-  statusPro: {
-    backgroundColor: colors.primary,
-  },
-  statusFree: {
-    backgroundColor: colors.surfaceLight,
-  },
-  statusText: {
-    fontSize: typography.fontSize.sm,
-    fontWeight: '600',
-    color: colors.text,
+  creditsValue: {
+    fontSize: typography.fontSize.xl,
+    color: colors.primary,
+    fontWeight: '700',
   },
   divider: {
     height: 1,
