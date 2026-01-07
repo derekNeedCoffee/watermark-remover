@@ -32,38 +32,38 @@ export function ComplianceModal({ visible, onAccept }: ComplianceModalProps) {
       <View style={styles.overlay}>
         <View style={styles.container}>
           <Text style={styles.title}>Terms of Use</Text>
-          
+
           <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
             <Text style={styles.heading}>Important Notice</Text>
             <Text style={styles.paragraph}>
-              This app is designed to help you edit images that you own or have 
+              This app is designed to help you edit images that you own or have
               explicit permission to modify.
             </Text>
 
             <Text style={styles.heading}>Permitted Use</Text>
             <Text style={styles.paragraph}>
-              • Remove watermarks from your own original images{'\n'}
+              • Remove unwanted objects from your own original images{'\n'}
               • Edit images you have created or own the rights to{'\n'}
               • Process images where you have obtained proper authorization
             </Text>
 
             <Text style={styles.heading}>Prohibited Use</Text>
             <Text style={styles.paragraph}>
-              • Removing copyright watermarks from others' work{'\n'}
+              • Removing copyright marks from others' work{'\n'}
               • Editing images without proper authorization{'\n'}
               • Any use that infringes on intellectual property rights
             </Text>
 
             <Text style={styles.heading}>Your Responsibility</Text>
             <Text style={styles.paragraph}>
-              You are solely responsible for ensuring you have the right to edit 
-              any image you process through this app. Misuse may result in 
+              You are solely responsible for ensuring you have the right to edit
+              any image you process through this app. Misuse may result in
               service termination.
             </Text>
 
             <Text style={styles.heading}>Privacy</Text>
             <Text style={styles.paragraph}>
-              Images are processed through our secure servers and are not stored 
+              Images are processed through our secure servers and are not stored
               permanently. Please review our Privacy Policy for more details.
             </Text>
           </ScrollView>
@@ -77,7 +77,7 @@ export function ComplianceModal({ visible, onAccept }: ComplianceModalProps) {
               {agreed && <Text style={styles.checkmark}>✓</Text>}
             </View>
             <Text style={styles.checkboxLabel}>
-              I agree to the Terms of Use and confirm I will only process 
+              I agree to the Terms of Use and confirm I will only process
               images I have the right to edit.
             </Text>
           </TouchableOpacity>

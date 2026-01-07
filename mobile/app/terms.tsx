@@ -15,7 +15,7 @@ import { colors, spacing, typography } from '../src/constants/theme';
 export default function TermsScreen() {
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView 
+      <ScrollView
         style={styles.scrollView}
         contentContainerStyle={styles.content}
         showsVerticalScrollIndicator={false}
@@ -24,11 +24,11 @@ export default function TermsScreen() {
         <Text style={styles.lastUpdated}>Last Updated: December 26, 2024</Text>
 
         <Section title="1. Acceptance of Terms">
-          By downloading, installing, or using Watermark Remover ("the App"), you agree to be bound by these Terms of Service ("Terms"). If you do not agree to these Terms, do not use the App.
+          By downloading, installing, or using CleanPic ("the App"), you agree to be bound by these Terms of Service ("Terms"). If you do not agree to these Terms, do not use the App.
         </Section>
 
         <Section title="2. Description of Service">
-          Watermark Remover is a mobile application that removes watermarks, overlays, and unwanted text from images. The service includes:
+          CleanPic is a mobile application that removes unwanted objects, overlays, and text from images. The service includes:
           <BulletPoint>Free trial with limited daily usage</BulletPoint>
           <BulletPoint>One-time purchase option for unlimited access (Pro)</BulletPoint>
           <BulletPoint>Advanced image processing</BulletPoint>
@@ -38,7 +38,7 @@ export default function TermsScreen() {
           You agree to:
           <BulletPoint>Use the App only for lawful purposes</BulletPoint>
           <BulletPoint>Not use the App to infringe on any third-party intellectual property rights</BulletPoint>
-          <BulletPoint>Not use the App to remove watermarks from copyrighted content without authorization</BulletPoint>
+          <BulletPoint>Not use the App to remove copyright marks from content without authorization</BulletPoint>
           <BulletPoint>Take full responsibility for the images you process</BulletPoint>
         </Section>
 
@@ -67,7 +67,7 @@ export default function TermsScreen() {
           <BulletPoint>The App will meet your specific requirements</BulletPoint>
           <BulletPoint>The App will be uninterrupted, timely, secure, or error-free</BulletPoint>
           <BulletPoint>The results obtained from using the App will be accurate or reliable</BulletPoint>
-          <BulletPoint>All watermarks will be completely removed</BulletPoint>
+          <BulletPoint>All unwanted objects will be completely removed</BulletPoint>
         </Section>
 
         <Section title="8. Limitation of Liability">
@@ -76,7 +76,7 @@ export default function TermsScreen() {
 
         <Section title="9. Prohibited Uses">
           You may not use the App to:
-          <BulletPoint>Remove watermarks from content you do not own or have permission to modify</BulletPoint>
+          <BulletPoint>Edit content you do not own or have permission to modify</BulletPoint>
           <BulletPoint>Create or distribute illegal content</BulletPoint>
           <BulletPoint>Violate any applicable laws or regulations</BulletPoint>
           <BulletPoint>Infringe on the rights of others</BulletPoint>
@@ -98,7 +98,7 @@ export default function TermsScreen() {
         <Section title="13. Contact Information">
           If you have any questions about these Terms, please contact us at:
           {'\n\n'}
-          Email: support@watermark-remover.app
+          Email: support@cleanpic.app
         </Section>
 
         <View style={styles.footer} />

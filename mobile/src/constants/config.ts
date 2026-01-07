@@ -14,8 +14,14 @@ const LOCAL_IP = '192.168.18.234';
 const LOCAL_API = `http://${LOCAL_IP}:8000`;
 
 // Switch between local and production
-const USE_PROD = true; // 改为 false 使用本地服务器
-export const API_URL = process.env.EXPO_PUBLIC_API_URL || (USE_PROD ? PROD_API : LOCAL_API);
+// 本地开发时改为 false，TestFlight/Release 永远用 PROD_API
+const USE_LOCAL_DEV = false;
+
+// 简化逻辑：直接根据 USE_LOCAL_DEV 决定，避免环境变量污染
+export const API_URL = USE_LOCAL_DEV ? LOCAL_API : PROD_API;
+
+// 启动时打印 API URL 用于调试
+console.log('🌐 API_URL:', API_URL);
 
 // IAP Product IDs
 export const IAP_PRODUCTS = {

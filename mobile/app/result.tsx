@@ -71,8 +71,8 @@ export default function ResultScreen() {
 
       // Save base64 to file
       const base64Data = imageData.resultBase64.replace(/^data:image\/\w+;base64,/, '');
-      const fileUri = FileSystem.documentDirectory + 'watermark_removed_' + Date.now() + '.png';
-      
+      const fileUri = FileSystem.documentDirectory + 'cleanpic_edited_' + Date.now() + '.png';
+
       await FileSystem.writeAsStringAsync(fileUri, base64Data, {
         encoding: 'base64',
       });
@@ -101,7 +101,7 @@ export default function ResultScreen() {
       // Save base64 to temp file for sharing
       const base64Data = imageData.resultBase64.replace(/^data:image\/\w+;base64,/, '');
       const fileUri = FileSystem.cacheDirectory + 'share_' + Date.now() + '.png';
-      
+
       await FileSystem.writeAsStringAsync(fileUri, base64Data, {
         encoding: 'base64',
       });

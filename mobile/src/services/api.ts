@@ -108,16 +108,22 @@ export async function getEntitlements(installId: string): Promise<Entitlement> {
     throw new ApiError('Failed to get entitlements', response.status);
   }
 
-  const data = await response.json();
-  return {
-    installId: data.install_id || data.installId,
-    isPro: data.is_pro || data.isPro,
-    freeRemaining: data.free_remaining ?? data.freeRemaining ?? 0,
-  };
+  const text = await response.text();
+  try {
+    const data = JSON.parse(text);
+    return {
+      installId: data.install_id || data.installId,
+      isPro: data.is_pro || data.isPro,
+      freeRemaining: data.free_remaining ?? data.freeRemaining ?? 0,
+    };
+  } catch (e) {
+    console.error('JSON Parse Error. Body:', text.slice(0, 100));
+    throw new ApiError(`Invalid JSON: ${text.slice(0, 50)}`, 200);
+  }
 }
 
 /**
- * Edit image to remove watermark
+ * Edit image using AI inpainting
  */
 export async function editImage(request: EditRequest): Promise<EditResponse> {
   console.log('📤 Sending edit request to:', `${API_URL}/v1/edit`);

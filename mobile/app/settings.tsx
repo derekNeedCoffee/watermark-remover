@@ -60,7 +60,7 @@ export default function SettingsScreen() {
       {/* Account Section */}
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>Account</Text>
-        
+
         <View style={styles.card}>
           <View style={styles.statusRow}>
             <Text style={styles.label}>Credits</Text>
@@ -68,7 +68,7 @@ export default function SettingsScreen() {
           </View>
 
           <View style={styles.divider} />
-          
+
           <View style={styles.statusRow}>
             <Text style={styles.label}>Free Uses Remaining</Text>
             <Text style={styles.value}>{entitlement?.freeRemaining ?? 0}</Text>
@@ -94,7 +94,7 @@ export default function SettingsScreen() {
       {/* Legal Section */}
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>Legal</Text>
-        
+
         <View style={styles.card}>
           <SettingsLink
             title="Privacy Policy"
@@ -111,18 +111,18 @@ export default function SettingsScreen() {
       {/* Support Section */}
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>Support</Text>
-        
+
         <View style={styles.card}>
           <SettingsLink
             title="Send Feedback"
-            onPress={() => Linking.openURL('mailto:support@watermark-remover.app?subject=Watermark Remover Feedback')}
+            onPress={() => Linking.openURL('mailto:support@cleanpic.app?subject=CleanPic Feedback')}
           />
         </View>
       </View>
 
       {/* App Info */}
       <View style={styles.footer}>
-        <Text style={styles.footerText}>Watermark Remover v1.0.0</Text>
+        <Text style={styles.footerText}>CleanPic v1.0.0</Text>
         <Text style={styles.footerText}>Install ID: {installId?.slice(0, 8)}...</Text>
         {DEV_MODE && (
           <Text style={[styles.footerText, { color: colors.warning }]}>

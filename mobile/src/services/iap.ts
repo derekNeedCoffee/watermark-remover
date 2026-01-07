@@ -118,7 +118,7 @@ export async function restorePurchases(installId: string): Promise<PurchaseResul
 
     if (purchases && purchases.length > 0) {
       console.log(`🔄 Found ${purchases.length} previous purchases`);
-      // For watermark remover, these are consumables, so they've likely been used.
+      // For CleanPic, these are consumables, so they've likely been used.
       // But we can check for non-consumable 'pro_unlock' if it existed.
       for (const purchase of purchases) {
         if (purchase.productId === 'pro_unlock') {

@@ -56,7 +56,7 @@ export default function RootLayout() {
         <Stack.Screen
           name="index"
           options={{
-            title: 'Watermark Remover',
+            title: 'CleanPic',
             headerShown: false,
           }}
         />

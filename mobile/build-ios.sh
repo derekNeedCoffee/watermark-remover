@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Watermark Remover iOS 构建和上传脚本
+# CleanPic iOS 构建和上传脚本
 # 用法: ./build-ios.sh [debug|release|upload]
 
 set -e
@@ -8,21 +8,21 @@ set -e
 BUILD_TYPE=${1:-release}
 
 echo "=========================================="
-echo "🖼️  Watermark Remover iOS 构建脚本"
+echo "🖼️  CleanPic iOS 构建脚本"
 echo "=========================================="
 
 # 项目配置
 PROJECT_DIR="$(cd "$(dirname "$0")" && pwd)"
 IOS_DIR="$PROJECT_DIR/ios"
-SCHEME="WatermarkRemover"
-WORKSPACE="$IOS_DIR/WatermarkRemover.xcworkspace"
-PROJECT="$IOS_DIR/WatermarkRemover.xcodeproj"
+SCHEME="CleanPic"
+WORKSPACE="$IOS_DIR/CleanPic.xcworkspace"
+PROJECT="$IOS_DIR/CleanPic.xcodeproj"
 TEAM_ID="EP73U6E2WX"
 BUNDLE_ID="com.linzaixinhua.watermarkremove"
 
 # 构建目录
 BUILD_DIR="$PROJECT_DIR/build"
-ARCHIVE_PATH="$BUILD_DIR/WatermarkRemover.xcarchive"
+ARCHIVE_PATH="$BUILD_DIR/CleanPic.xcarchive"
 EXPORT_PATH="$BUILD_DIR/export"
 
 # 创建构建目录
@@ -76,7 +76,7 @@ echo ""
 
 if [ "$BUILD_TYPE" != "upload" ]; then
     # 自动增加 Build Number
-    PLIST_PATH="$IOS_DIR/WatermarkRemover/Info.plist"
+    PLIST_PATH="$IOS_DIR/CleanPic/Info.plist"
     if [ -f "$PLIST_PATH" ]; then
         CURRENT_BUILD=$(/usr/libexec/PlistBuddy -c "Print CFBundleVersion" "$PLIST_PATH" 2>/dev/null || echo "1")
         

@@ -1,13 +1,13 @@
 {
   "expo": {
-    "name": "Watermark Remover",
-    "slug": "watermark-remover",
+    "name": "CleanPic",
+    "slug": "cleanpic",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "dark",
     "newArchEnabled": false,
-    "scheme": "watermark-remover",
+    "scheme": "cleanpic",
     "splash": {
       "image": "./assets/splash-icon.png",
       "resizeMode": "contain",
@@ -18,7 +18,7 @@
       "bundleIdentifier": "com.linzaixinhua.watermarkremove",
       "appleTeamId": "EP73U6E2WX",
       "infoPlist": {
-        "NSPhotoLibraryUsageDescription": "We need access to your photos to select images for watermark removal.",
+        "NSPhotoLibraryUsageDescription": "We need access to your photos to select images for editing.",
         "NSPhotoLibraryAddUsageDescription": "We need permission to save edited images to your photo library."
       }
     },

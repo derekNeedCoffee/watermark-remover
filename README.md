@@ -1,11 +1,11 @@
-# Watermark Remover
+# CleanPic
 
-AI-powered watermark and overlay removal app for iOS.
+AI-powered image editing and object removal app for iOS.
 
 ## Project Structure
 
 ```
-watermark-remover/
+cleanpic/
 ├── backend/          # Node.js Express backend
 │   └── src/
 │       ├── index.js      # Server entry

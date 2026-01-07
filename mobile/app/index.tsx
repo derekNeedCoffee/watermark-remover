@@ -23,7 +23,7 @@ import { useEntitlement } from '../src/hooks/useEntitlement';
 
 export default function HomeScreen() {
   const router = useRouter();
-  const { entitlement, loading, refresh, canUseService } = useEntitlement();
+  const { entitlement, loading, refresh, canUseService, error } = useEntitlement();
   const [pickingImage, setPickingImage] = useState(false);
 
   // Refresh entitlement when screen comes into focus
@@ -57,7 +57,7 @@ export default function HomeScreen() {
 
       if (!result.canceled && result.assets[0]) {
         const asset = result.assets[0];
-        
+
         // Store original image immediately and navigate (fast!)
         // We'll process the image in the background on editor screen
         setCurrentImage({
@@ -67,7 +67,7 @@ export default function HomeScreen() {
           height: asset.height || 0,
           needsProcessing: true, // Flag to process on editor
         } as any);
-        
+
         // Navigate immediately
         router.push('/editor');
       }
@@ -81,6 +81,7 @@ export default function HomeScreen() {
 
   const getStatusText = () => {
     if (loading) return 'Loading...';
+    if (error) return error; // Show actual error message
     if (!entitlement) return '';
     const totalRemaining = (entitlement.credits ?? 0) + (entitlement.freeRemaining ?? 0);
     if (totalRemaining > 0) {
@@ -90,6 +91,7 @@ export default function HomeScreen() {
   };
 
   const getStatusStyle = () => {
+    if (error) return styles.statusExpired;
     if (!entitlement) return styles.statusNeutral;
     const totalRemaining = (entitlement.credits ?? 0) + (entitlement.freeRemaining ?? 0);
     if (totalRemaining > 0) return styles.statusFree;
@@ -99,12 +101,12 @@ export default function HomeScreen() {
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar style="light" />
-      
+
       {/* Header */}
       <View style={styles.header}>
-        <Text style={styles.title}>Watermark{'\n'}Remover</Text>
+        <Text style={styles.title}>CleanPic</Text>
         <Text style={styles.subtitle}>
-          Clean images in seconds
+          Remove unwanted objects in seconds
         </Text>
       </View>
 
@@ -125,7 +127,7 @@ export default function HomeScreen() {
           <FeatureCard
             icon="✨"
             title="Smart Removal"
-            description="Removes watermarks and fills in the background seamlessly"
+            description="Removes unwanted objects and fills in naturally"
           />
           <FeatureCard
             icon="💾"
@@ -142,7 +144,7 @@ export default function HomeScreen() {
           onPress={handleSelectImage}
           size="large"
         />
-        
+
         <TouchableOpacity
           style={styles.settingsButton}
           onPress={() => router.push('/settings')}

@@ -15,7 +15,7 @@ import { colors, spacing, typography } from '../src/constants/theme';
 export default function PrivacyScreen() {
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView 
+      <ScrollView
         style={styles.scrollView}
         contentContainerStyle={styles.content}
         showsVerticalScrollIndicator={false}
@@ -24,7 +24,7 @@ export default function PrivacyScreen() {
         <Text style={styles.lastUpdated}>Last Updated: December 26, 2024</Text>
 
         <Section title="1. Introduction">
-          Welcome to Watermark Remover ("we," "our," or "us"). We respect your privacy and are committed to protecting your personal data. This Privacy Policy explains how we collect, use, and safeguard your information when you use our mobile application.
+          Welcome to CleanPic ("we," "our," or "us"). We respect your privacy and are committed to protecting your personal data. This Privacy Policy explains how we collect, use, and safeguard your information when you use our mobile application.
         </Section>
 
         <Section title="2. Information We Collect">
@@ -40,7 +40,7 @@ export default function PrivacyScreen() {
         </Section>
 
         <Section title="3. How We Use Your Information">
-          <BulletPoint>To provide our watermark removal service</BulletPoint>
+          <BulletPoint>To provide our image editing service</BulletPoint>
           <BulletPoint>To track your free usage quota</BulletPoint>
           <BulletPoint>To verify and manage your in-app purchases</BulletPoint>
           <BulletPoint>To improve our service quality</BulletPoint>
@@ -86,7 +86,7 @@ export default function PrivacyScreen() {
         <Section title="10. Contact Us">
           If you have any questions about this Privacy Policy, please contact us at:
           {'\n\n'}
-          Email: support@watermark-remover.app
+          Email: support@cleanpic.app
         </Section>
 
         <View style={styles.footer} />

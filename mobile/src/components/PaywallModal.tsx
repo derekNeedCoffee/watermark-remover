@@ -102,7 +102,7 @@ export function PaywallModal({
 
           {/* Subtitle */}
           <Text style={styles.subtitle}>
-            Each credit = 1 watermark removal
+            Each credit = 1 image edit
           </Text>
 
           {/* Credit Packages */}
@@ -133,7 +133,7 @@ export function PaywallModal({
 
           {/* Features */}
           <View style={styles.features}>
-            <FeatureItem emoji="✨" text="AI-powered watermark removal" />
+            <FeatureItem emoji="✨" text="AI-powered object removal" />
             <FeatureItem emoji="⚡" text="Fast processing in seconds" />
             <FeatureItem emoji="🔒" text="Your photos stay private" />
             <FeatureItem emoji="♾️" text="Credits never expire" />
