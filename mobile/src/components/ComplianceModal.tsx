@@ -49,7 +49,7 @@ export function ComplianceModal({ visible, onAccept }: ComplianceModalProps) {
 
             <Text style={styles.heading}>Prohibited Use</Text>
             <Text style={styles.paragraph}>
-              • Removing copyright marks from others' work{'\n'}
+              • Removing objects you do not have permission to remove{'\n'}
               • Editing images without proper authorization{'\n'}
               • Any use that infringes on intellectual property rights
             </Text>

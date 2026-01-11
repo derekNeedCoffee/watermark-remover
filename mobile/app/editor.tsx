@@ -23,7 +23,7 @@ import { getCurrentImage, setCurrentImage } from '../src/services/imageStore';
 
 export default function EditorScreen() {
   const router = useRouter();
-  
+
   // Get image from memory store (fast!)
   const [imageData, setImageData] = useState<any>(getCurrentImage());
   const [isProcessing, setIsProcessing] = useState(false);
@@ -40,7 +40,7 @@ export default function EditorScreen() {
     const processImageIfNeeded = async () => {
       // Get fresh image data
       const currentData = getCurrentImage() as any;
-      
+
       if (!currentData) {
         router.back();
         return;
@@ -53,7 +53,7 @@ export default function EditorScreen() {
         try {
           console.log('📷 Processing image (HEIC -> JPEG)...');
           console.log('📷 Original URI:', currentData.uri);
-          
+
           const manipulated = await ImageManipulator.manipulateAsync(
             currentData.uri,
             [
@@ -68,9 +68,9 @@ export default function EditorScreen() {
               base64: true,
             }
           );
-          
+
           console.log('📷 Image converted to JPEG:', Math.round((manipulated.base64?.length || 0) / 1024), 'KB');
-          
+
           // Update image data with processed result
           const updatedData = {
             uri: manipulated.uri,
@@ -79,7 +79,7 @@ export default function EditorScreen() {
             height: manipulated.height,
             needsProcessing: false,
           };
-          
+
           setCurrentImage(updatedData);
           setImageData(updatedData);
         } catch (error) {
@@ -110,7 +110,7 @@ export default function EditorScreen() {
     }
 
     if (!canUseService) {
-      setShowPaywall(true);
+      Alert.alert('No Uses Remaining', 'You have used all your free credits. Please wait for the next update for more options.');
       return;
     }
 
@@ -173,7 +173,7 @@ export default function EditorScreen() {
           style={styles.image}
           resizeMode="contain"
         />
-        
+
         {/* Processing overlay */}
         {isProcessing && (
           <View style={styles.processingOverlay}>
@@ -181,7 +181,7 @@ export default function EditorScreen() {
             <Text style={styles.processingText}>Preparing image...</Text>
           </View>
         )}
-        
+
         {/* BBox Selector Overlay */}
         {!isProcessing && imageWidth > 0 && imageHeight > 0 && (
           <BBoxSelector
@@ -221,7 +221,7 @@ export default function EditorScreen() {
         </View>
 
         <Button
-          title={isProcessing ? "Preparing..." : (canUseService ? "Remove" : "Unlock to Remove")}
+          title={isProcessing ? "Preparing..." : (canUseService ? "Remove" : "No Uses Remaining")}
           onPress={handleRemove}
           size="large"
           disabled={!bbox || isProcessing}
@@ -233,7 +233,7 @@ export default function EditorScreen() {
           <Text style={styles.entitlementInfo}>
             {(entitlement.credits ?? 0) + (entitlement.freeRemaining ?? 0) > 0
               ? `${(entitlement.credits ?? 0) + (entitlement.freeRemaining ?? 0)} uses remaining`
-              : 'No credits • Buy more to continue'}
+              : 'End of free uses'}
           </Text>
         )}
       </View>

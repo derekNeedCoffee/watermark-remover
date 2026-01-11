@@ -59,36 +59,14 @@ export default function SettingsScreen() {
     <SafeAreaView style={styles.container} edges={['bottom']}>
       {/* Account Section */}
       <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Account</Text>
+        <Text style={styles.sectionTitle}>Credits</Text>
 
         <View style={styles.card}>
           <View style={styles.statusRow}>
-            <Text style={styles.label}>Credits</Text>
-            <Text style={styles.creditsValue}>{entitlement?.credits ?? 0}</Text>
-          </View>
-
-          <View style={styles.divider} />
-
-          <View style={styles.statusRow}>
             <Text style={styles.label}>Free Uses Remaining</Text>
-            <Text style={styles.value}>{entitlement?.freeRemaining ?? 0}</Text>
+            <Text style={styles.creditsValue}>{(entitlement?.credits ?? 0) + (entitlement?.freeRemaining ?? 0)}</Text>
           </View>
         </View>
-
-        <Button
-          title="Buy More Credits"
-          onPress={() => setShowPaywall(true)}
-          size="large"
-          style={styles.upgradeButton}
-        />
-
-        <Button
-          title="Restore Purchases"
-          onPress={handleRestore}
-          variant="outline"
-          loading={restoring}
-          disabled={restoring}
-        />
       </View>
 
       {/* Legal Section */}
